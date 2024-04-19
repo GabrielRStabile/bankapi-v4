@@ -61,7 +61,7 @@ class DepositTest {
 		double saldoInicial = 150.85;
 
 		depositDTO = new DepositDTO(12345, 1000);
-		receiverAccount = new Account("John Smith", 12345, saldoInicial, 0);
+		receiverAccount = new Account("Gabriel Stabile", 12345, saldoInicial, 0);
 
 		// Comportamento do availableAccountValidation
 		BDDMockito.given(availableAccountValidation.validate(depositDTO.receiverAccountNumber()))

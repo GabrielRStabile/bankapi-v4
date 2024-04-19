@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import br.edu.utfpr.bankapi.model.Account;
 import jakarta.transaction.Transactional;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestEntityManager
@@ -96,4 +98,34 @@ class TransactionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath(
                         "$.amount", Matchers.equalTo(200)));
     }
+
+
+
+        @Test
+        void deveriaSacar() throws Exception {
+            // ARRANGE
+            String json = "{ \"sourceAccountNumber\": 12345, \"amount\": 500 }";
+
+            // ACT & ASSERT
+            mvc.perform(MockMvcRequestBuilders.post("/transaction/withdraw")
+                            .content(json).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.sourceAccount.number", Matchers.equalTo(12345)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.amount", Matchers.equalTo(500.0)));
+        }
+
+        @Test
+        void deveriaTransferir() throws Exception {
+            // ARRANGE
+            String json = "{ \"sourceAccountNumber\": 12345, \"receiverAccountNumber\": 67890, \"amount\": 500 }";
+
+            // ACT & ASSERT
+            mvc.perform(MockMvcRequestBuilders.post("/transaction/transfer")
+                            .content(json).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.sourceAccount.number", Matchers.equalTo(12345)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.receiverAccount.number", Matchers.equalTo(67890)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.amount", Matchers.equalTo(500.0)));
+        }
+
 }
